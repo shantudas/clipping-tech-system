@@ -1,6 +1,8 @@
 package com.clippingtech.system.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,19 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<UserEntity> fetchAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Page<UserEntity> fetchAllUsers(int page, int size, String searchTerm) {
+        // Search logic (assuming search by name)
+        String searchTermLike = "%" + searchTerm + "%";
+        Page<UserEntity> userPage;
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            userPage = userRepository.findByFirstNameLikeOrLastNameLike(searchTermLike, searchTermLike, PageRequest.of(page, size));
+        } else {
+            userPage = userRepository.findAll(PageRequest.of(page, size));
+        }
+        return userPage;
     }
 
     @Override

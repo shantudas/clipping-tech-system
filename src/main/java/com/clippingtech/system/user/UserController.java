@@ -2,6 +2,7 @@ package com.clippingtech.system.user;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -28,12 +29,20 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
-        List<UserEntity> users = userService.fetchAllUsers();
-        List<UserResponseDto> userResponseDtos = users.stream()
-                .map(userMapper::toDto) // Use method reference for concise mapping
+    public ResponseEntity<Page<UserResponseDto>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String searchTerm) {
+
+        Page<UserEntity> userPage = userService.fetchAllUsers(page, size, searchTerm);
+
+        // Mapping to UserResponseDto and returning paginated response
+        List<UserResponseDto> userResponseDtos = userPage.getContent()
+                .stream()
+                .map(userMapper::toDto)
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(userResponseDtos, HttpStatus.OK);
+
+        return new ResponseEntity<>(userPage.map(UserResponseDto::new), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
