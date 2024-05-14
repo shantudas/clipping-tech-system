@@ -1,7 +1,5 @@
-package com.clippingtech.system.service;
+package com.clippingtech.system.user;
 
-import com.clippingtech.system.model.User;
-import com.clippingtech.system.respository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,22 +12,22 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
     @Override
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public UserEntity saveUser(UserEntity userEntity) {
+        return userRepository.save(userEntity);
     }
 
     @Override
-    public List<User> fetchAllUsers() {
+    public List<UserEntity> fetchAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public User getUserById(Integer id) {
+    public UserEntity getUserById(Integer id) {
         return null;
     }
 
     @Override
-    public User updateUserById(Integer id, User User) {
+    public UserEntity updateUserById(Integer id, UserEntity UserEntity) {
         return null;
     }
 
